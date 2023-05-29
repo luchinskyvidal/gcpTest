@@ -1,0 +1,13 @@
+- name: Deploy App to GKE Cluster
+  hosts: gke-cluster
+  gather_facts: false
+  tasks:
+    - name: Set Kubeconfig
+      command: "export KUBECONFIG=$(kubectl config view --minify --output 'jsonpath={.kubeconfig}')"
+
+    - name: Deploy App
+      k8s:
+        definition: app.yaml
+        state: present
+        kubeconfig: "{{ lookup('env', 'KUBECONFIG') }}"
+
